@@ -8,9 +8,10 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
     ],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -26,7 +27,7 @@ def root():
 async def predict(file: UploadFile = File(...)):
     image = Image.open(file.file)
 
-    results = model(image, conf=0.5, device=0)
+    results = model(image, conf=0.5)
     detections = []
     for box in results[0].boxes:
         class_id = int(box.cls[0])

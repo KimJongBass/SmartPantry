@@ -3,6 +3,9 @@
 
 import { useRef, useState } from "react";
 
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+
 export default function Home() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cameraActive, setCameraActive] = useState(false);
@@ -64,7 +67,7 @@ async function analyzeImage() {
     const formData = new FormData();
     formData.append("file", blob, "pantry.jpg");
 
-    const result = await fetch("http://127.0.0.1:8000/predict", {
+    const result = await fetch(`${API_URL}/predict`, {
       method: "POST",
       body: formData,
     });
