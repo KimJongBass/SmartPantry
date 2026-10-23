@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useRef, useState } from "react";
@@ -12,6 +11,10 @@ export default function Home() {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [detections, setDetections] = useState<
   { name: string; confidence: number }[] | null
+  >(null);
+  // User's list with a present (yes/no) flag per item, returned by /predict
+  const [pantry, setPantry] = useState<
+  { id: number; name: string; present: boolean }[] | null
   >(null);
 
   async function startCamera() {
@@ -80,6 +83,7 @@ async function analyzeImage() {
 
     console.log("Respuesta de YOLO:", data);
     setDetections(data.detections);
+    setPantry(data.pantry ?? null);
   } catch (error) {
     console.error("Error al analizar la imagen:", error);
     alert("No se pudo analizar la imagen. Revisa la consola del navegador.");
@@ -159,6 +163,31 @@ return (
         </div>
         )}
 
+
+      {pantry && (
+        <div className="mt-6 rounded-xl bg-white p-5 shadow">
+          <h2 className="mb-3 text-xl font-bold">
+            Mi lista
+          </h2>
+
+          <ul className="space-y-2">
+            {pantry.map((item) => (
+              <li key={item.id} className="flex items-center justify-between">
+                <span>{item.name}</span>
+                <span
+                  className={
+                    item.present
+                      ? "rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-800"
+                      : "rounded-full bg-zinc-200 px-3 py-1 text-sm font-semibold text-zinc-600"
+                  }
+                >
+                  {item.present ? "Sí hay" : "No hay"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
     </div>
   </main>
